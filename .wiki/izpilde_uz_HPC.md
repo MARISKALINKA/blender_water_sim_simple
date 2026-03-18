@@ -1,129 +1,199 @@
-﻿## 2. Studentu soli-pa-solim ceļvedis (Git + Blender)
+﻿# HPC.md
 
-🎥 **Video: Projekta ievads**  
-https://img.youtube.com/vi/YOUTUBE_ID_00/hqdefault.jpg](https://www.youtube.com/watch?v=YOUTUBE_ID_00)
+## 1. Kods darba izpildei: `run_blender.sh`
 
-Šis projekts palīdzēs Jums:
-- Iemācīties Git pamatus
-- Paņemt projektu no GitHub savā datorā
-- Instalēt un lietot Blender
-- Palaist Python skriptus Blender vidē
-- Izveidot ūdens simulāciju ar Mantaflow
-- Sagatavot materiālus iesniegšanai
+```bash
+#!/bin/sh
+#PBS -N blender
+#PBS -q batch
+#PBS -l walltime=12:00:00
+#PBS -l nodes=1:ppn=16:gpus=1,feature=l40s,mem=16gb
+#PBS -j oe
+##PBS -t 1-100%50
 
-**Svarīgi:** Jūs strādājat tikai lokāli. Nekas nav jāpusho uz GitHub.
+module load blender/3.6.4-sg-test
+cd $PBS_O_WORKDIR
+
+blender --background ./Simulation_v1.blend --python bake.py
+blender --background ./Simulation_v1.blend --python render.py
+```
+
+### Skripta skaidrojums
+
+#### a. Shebang
+```bash
+#!/bin/sh
+```
+Norāda, ka skripts jāpalaiž ar POSIX `sh` čaulu.
+
+#### b. Darba nosaukums
+```bash
+#PBS -N blender
+```
+Piešķir darba nosaukumu "blender".
+
+#### c. Izpildes rinda
+```bash
+#PBS -q batch
+```
+Nosaka, ka darbs tiek izpildīts rindā *batch*.
+
+#### d. Maksimālais izpildes laiks
+```bash
+#PBS -l walltime=12:00:00
+```
+Pieprasa 12 h maksimālo izpildes laiku.
+
+#### e. Pieprasītie resursi
+```bash
+#PBS -l nodes=1:ppn=16:gpus=1,feature=l40s,mem=16gb
+```
+* `nodes=1` – viens mezgls
+* `ppn=16` – 16 CPU kodoli
+* `gpus=1` – viens GPU
+* `feature=l40s` – jābūt L40s GPU mezglam
+* `mem=16gb` – kopējā atmiņa
+
+#### f. Apvienot STDOUT + STDERR
+```bash
+#PBS -j oe
+```
+Izvada visu vienā failā.
+
+#### g. Komentēta job array rinda
+```bash
+##PBS -t 1-100%50
+```
+Ļautu palaist vairākus paralēlus darbus.
+
+#### h. Ielādē Blender moduli
+```bash
+module load blender/3.6.4-sg-test
+```
+
+#### i. Pāriet uz iesniegšanas mapi
+```bash
+cd $PBS_O_WORKDIR
+```
+
+#### j. Bake process
+```bash
+blender --background ./Simulation_v1.blend --python bake.py
+```
+
+#### k. Renderēšana
+```bash
+blender --background ./Simulation_v1.blend --python render.py
+```
 
 ---
-# 🟦 1. Instalējiet Git
 
-🎥 **Video: Git instalācija**  
-https://img.youtube.com/vi/YOUTUBE_ID_01/hqdefault.jpg](https://www.youtube.com/watch?v=YOUTUBE_ID_01)
+## 2. Bake skripts: `bake.py`
 
-Windows: https://git-scm.com/download/win
+```python
+import bpy
+import os
+import time
 
-macOS:
-```
-xcode-select --install
-```
-Linux:
-```
-sudo apt install git
+start_time = time.time()
+JOBID = os.environ.get("PBS_JOBID")
+
+scene = bpy.data.scenes['Scene']
+obj = scene.objects['SimulacijasVide']
+
+if obj.modifiers.get("Fluid"):
+    fluid_modifier = obj.modifiers["Fluid"]
+    domain_settings = fluid_modifier.domain_settings
+    my_cache_dir = os.path.abspath("./cash_" + JOBID)
+    domain_settings.cache_directory = my_cache_dir
+    print("Cache directory set to:", domain_settings.cache_directory)
+
+with bpy.context.temp_override(scene=scene, active_object=obj):
+    bpy.ops.fluid.bake_data()
+    bpy.ops.fluid.bake_mesh()
+    print("All baking steps completed successfully!")
+
+end_time = time.time()
+print(f"Baking time: {end_time - start_time} seconds")
 ```
 
-Pārbaudiet:
-```
-git --version
-```
+### Skripta skaidrojums
+
+#### a. Moduļu ielāde
+* `bpy` – Blender API
+* `os`, `time` – ceļi, taimeris
+
+#### b. JOBID ielasīšana
+Izmanto unikālu keša mapi.
+
+#### c. Scenas un objekta izvēle
+Piekļūst objektam ar Fluid modifikatoru.
+
+#### d. Keša direktorija iestatīšana
+Izveido keša mapi: `cash_<JOBID>`.
+
+#### e. Bake process
+Izpilda:
+* `bake_data()` – pamata simulācija
+* `bake_mesh()` – ģenerē mesh
+
+#### f. Laika mērīšana
+Izdrukā kopējo bake ilgumu.
 
 ---
-# 🟩 2. Paņemiet projektu no GitHub
 
-🎥 **Video: Kā klonēt projektu**  
-https://img.youtube.com/vi/YOUTUBE_ID_02/hqdefault.jpg](https://www.youtube.com/watch?v=YOUTUBE_ID_02)
+## 3. Renderēšanas skripts
 
-```
-cd Documents
-git clone https://github.com/<skolotajs>/blender-water-sim.git
-```
+```python
+import bpy
+import os
+import time
 
-Atjaunināšana:
-```
-cd blender-water-sim
-git pull
-```
+JOBID = os.environ.get("PBS_JOBID")
+start_time = time.time()
 
----
-# 🟧 3. Instalējiet Blender
+bpy.context.scene.render.engine = 'CYCLES'
+cycles_prefs = bpy.context.preferences.addons["cycles"].preferences
+cycles_prefs.get_devices()
 
-🎥 **Video: Blender instalēšana**  
-https://img.youtube.com/vi/YOUTUBE_ID_03/hqdefault.jpg](https://www.youtube.com/watch?v=YOUTUBE_ID_03)
+for device in cycles_prefs.devices:
+    print(f"Device: {device.name}, Enabled: {device.use}")
 
-Oficiālā lapa: https://www.blender.org/download/
+bpy.context.preferences.addons['cycles'].preferences.compute_device_type = 'CUDA'
+bpy.context.scene.cycles.device = 'GPU'
 
----
-# 🟨 4. Atveriet projektu Blender
+scene = bpy.data.scenes['Scene']
+obj = scene.objects['SimulacijasVide']
+if obj.modifiers.get("Fluid"):
+    fluid_modifier = obj.modifiers["Fluid"]
+    domain_settings = fluid_modifier.domain_settings
+    my_cache_dir = os.path.abspath("./cash_" + JOBID)
+    domain_settings.cache_directory = my_cache_dir
+    print("Cache directory set to:", domain_settings.cache_directory)
 
-🎥 **Video: Kā atvērt projektu Blender**  
-https://img.youtube.com/vi/YOUTUBE_ID_04/hqdefault.jpg](https://www.youtube.com/watch?v=YOUTUBE_ID_04)
+bpy.context.scene.render.filepath = "./render_output_3/frame_"
+bpy.ops.render.render(animation=True)
 
-1. Atveriet Blender
-2. Augšā izvēlieties **Scripting**
-3. Atveriet skriptu:
-```
-scripts/create_scene.py
-```
-4. Spiediet **Run Script**
-
----
-# 🟫 5. Palaidiet ūdens simulāciju (Bake)
-
-🎥 **Video: Bake Liquid simulācija**  
-https://img.youtube.com/vi/YOUTUBE_ID_05/hqdefault.jpg](https://www.youtube.com/watch?v=YOUTUBE_ID_05)
-
-1. Atlasiet **FluidDomain** objektu 
-2. Physics Properties → Fluid → Liquid
-3. Spiediet **Bake All**
-
----
-# 🟥 6. Parametru maiņa
-
-🎥 **Video: Parametru rediģēšana**  
-https://img.youtube.com/vi/YOUTUBE_ID_06/hqdefault.jpg](https://www.youtube.com/watch?v=YOUTUBE_ID_06)
-
-Parametru fails:
-```
-scripts/params.default.json
+end_time = time.time()
+print(f"Rendering time: {end_time - start_time} seconds")
 ```
 
-Mainīšanai:
-1. Nokopējiet uz `params.json`
-2. Rediģējiet vērtības
+### Skripta skaidrojums
 
----
-# 🟦 7. Kur mācīties Blender
+#### a. Moduļu ielāde un JOBID
+Sagatavo vidi un render taimeri.
 
-🎥 **Video: Blender pamati**  
-https://img.youtube.com/vi/YOUTUBE_ID_07/hqdefault.jpg](https://www.youtube.com/watch?v=YOUTUBE_ID_07)
+#### b. Cycles aktivizēšana un GPU konfigurācija
+Pārslēdz renderētāju uz Cycles un aktivizē CUDA.
 
-https://docs.blender.org/manual/en/latest/
+#### c. GPU ierīču izdruka
+Parāda pieejamos GPU HPC mezglā.
 
----
-# 🟩 8. Iesniedzamie materiāli
+#### d. Keša direktorija izveide
+Nodrošina unikālu kešu katram darbam.
 
-🎥 **Video: Kā sagatavot iesniegumu**  
-https://img.youtube.com/vi/YOUTUBE_ID_08/hqdefault.jpg](https://www.youtube.com/watch?v=YOUTUBE_ID_08)
+#### e. Renderēšana
+Renderē animāciju GPU režīmā.
 
-- Parametru apraksts
-- Attēli (PNG/JPG)
-- Īss video (MP4)
-- Salīdzinājums, ja veikti vairāki Bake
-
----
-# 🟪 9. Biežākās problēmas
-
-🎥 **Video: Problēmu risināšana**  
-https://img.youtube.com/vi/YOUTUBE_ID_09/hqdefault.jpg](https://www.youtube.com/watch?v=YOUTUBE_ID_09)
-
----
-# 🎉 Lai labi izdodas!
-
+#### f. Renderēšanas laiks
+Izdrukā kopējo render ilgumu.

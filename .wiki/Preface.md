@@ -1,6 +1,9 @@
-﻿# 🔧 Skripta koda skaidrojums (saprotams iesācējiem)
+﻿# 🔧 Projekta skaidrojums 
 
-Šis dokuments paskaidro, ko dara Blender Python skripts katrā tā posmā.
+Šis dokuments paskaidro, kā iesakt darbu ar GIT Blender ar un bez HPC centra resursiem.
+Soli pa solim ir skaidrojums kā izmantojot Python skriptu, var izveidot Blender projektu un renderēt.
+HPC izpildskripti izmantojami ja ir HPC resursi pieejami.
+Skripti kas atrodas zem script izmantojami iekš Blender
 
 ---
 

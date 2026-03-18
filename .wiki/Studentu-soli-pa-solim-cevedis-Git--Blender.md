@@ -108,18 +108,7 @@ https://img.youtube.com/vi/YOUTUBE_ID_07/hqdefault.jpg](https://www.youtube.com/
 https://docs.blender.org/manual/en/latest/
 
 ---
-# 🟩 8. Iesniedzamie materiāli
-
-🎥 **Video: Kā sagatavot iesniegumu**  
-https://img.youtube.com/vi/YOUTUBE_ID_08/hqdefault.jpg](https://www.youtube.com/watch?v=YOUTUBE_ID_08)
-
-- Parametru apraksts
-- Attēli (PNG/JPG)
-- Īss video (MP4)
-- Salīdzinājums, ja veikti vairāki Bake
-
----
-# 🟪 9. Biežākās problēmas
+# 🟪 8. Biežākās problēmas
 
 🎥 **Video: Problēmu risināšana**  
 https://img.youtube.com/vi/YOUTUBE_ID_09/hqdefault.jpg](https://www.youtube.com/watch?v=YOUTUBE_ID_09)
