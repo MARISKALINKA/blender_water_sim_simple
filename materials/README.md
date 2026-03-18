@@ -5,32 +5,28 @@
 https://img.youtube.com/vi/YOUTUBE_ID_00/hqdefault.jpg](https://www.youtube.com/watch?v=YOUTUBE_ID_00)
 
 Šis projekts palīdzēs Jums:
-- Iemācīties pamata Git darbības (klonēšana, atjaunināšana)
+- Iemācīties Git pamatus
 - Paņemt projektu no GitHub savā datorā
-- Instalēt un lietot Blender programmu
+- Instalēt un lietot Blender
 - Palaist Python skriptus Blender vidē
-- Izveidot ūdens (liquid) simulāciju ar Mantaflow
-- Sagatavot rezultātus iesniegšanai
+- Izveidot ūdens simulāciju ar Mantaflow
+- Sagatavot materiālus iesniegšanai
 
-**Svarīgi:** Jums NAV jāaugšupielādē darbs atpakaļ GitHub.  
-Jūs strādājat tikai savā datorā.
+**Svarīgi:** Jūs strādājat tikai lokāli. Nekas nav jāpusho uz GitHub.
 
 ---
+# 🟦 1. Instalējiet Git
 
-# 🟦 1. Instalējiet Git (obligāti)
-
-🎥 **Video: Kā uzinstalēt Git**  
+🎥 **Video: Git instalācija**  
 https://img.youtube.com/vi/YOUTUBE_ID_01/hqdefault.jpg](https://www.youtube.com/watch?v=YOUTUBE_ID_01)
 
-## Windows  
-https://git-scm.com/download/win
+Windows: https://git-scm.com/download/win
 
-## macOS
+macOS:
 ```
 xcode-select --install
 ```
-
-## Linux
+Linux:
 ```
 sudo apt install git
 ```
@@ -41,113 +37,82 @@ git --version
 ```
 
 ---
+# 🟩 2. Paņemiet projektu no GitHub
 
-# 🟩 2. Paņemiet projektu no GitHub ar Git
-
-🎥 **Video: Klonēšana un atjaunināšana**  
+🎥 **Video: Kā klonēt projektu**  
 https://img.youtube.com/vi/YOUTUBE_ID_02/hqdefault.jpg](https://www.youtube.com/watch?v=YOUTUBE_ID_02)
 
-## 2.1 Atveriet Git Bash / Terminal  
-## 2.2 Pārejiet uz mapi
 ```
 cd Documents
-```
-
-## 2.3 Klonējiet projektu
-```
 git clone https://github.com/<skolotajs>/blender-water-sim.git
 ```
 
-## 2.4 Atjauniniet projektu
+Atjaunināšana:
 ```
 cd blender-water-sim
 git pull
 ```
 
 ---
-
 # 🟧 3. Instalējiet Blender
 
-🎥 **Video: Blender instalācija**  
+🎥 **Video: Blender instalēšana**  
 https://img.youtube.com/vi/YOUTUBE_ID_03/hqdefault.jpg](https://www.youtube.com/watch?v=YOUTUBE_ID_03)
 
-Lejupielāde:  
-https://www.blender.org/download/
+Oficiālā lapa: https://www.blender.org/download/
 
 ---
+# 🟨 4. Atveriet projektu Blender
 
-# 🟨 4. Atveriet projektu Blender programmā
-
-🎥 **Video: Kā atvērt projektu Blender vidē**  
+🎥 **Video: Kā atvērt projektu Blender**  
 https://img.youtube.com/vi/YOUTUBE_ID_04/hqdefault.jpg](https://www.youtube.com/watch?v=YOUTUBE_ID_04)
 
-## 4.1 Palaidiet Blender  
-## 4.2 Izvēlieties **Scripting**  
-## 4.3 Atveriet skriptu:
+1. Atveriet Blender
+2. Augšā izvēlieties **Scripting**
+3. Atveriet skriptu:
 ```
 scripts/create_scene.py
 ```
-
-## 4.4 Nospiediet **Run Script**
+4. Spiediet **Run Script**
 
 ---
-
-# 🟫 5. Palaidiet ūdens simulāciju (BAKE)
+# 🟫 5. Palaidiet ūdens simulāciju (Bake)
 
 🎥 **Video: Bake Liquid simulācija**  
 https://img.youtube.com/vi/YOUTUBE_ID_05/hqdefault.jpg](https://www.youtube.com/watch?v=YOUTUBE_ID_05)
 
-Soļi:
-1. Atlasiet **FluidDomain**  
-2. Physics Properties → Fluid  
-3. Nospiediet **Bake All**  
+1. Atlasiet **FluidDomain** objektu 
+2. Physics Properties → Fluid → Liquid
+3. Spiediet **Bake All**
 
 ---
-
 # 🟥 6. Parametru maiņa
 
-🎥 **Video: Parametru maiņa ar params.json**  
+🎥 **Video: Parametru rediģēšana**  
 https://img.youtube.com/vi/YOUTUBE_ID_06/hqdefault.jpg](https://www.youtube.com/watch?v=YOUTUBE_ID_06)
 
-Faili:
+Parametru fails:
 ```
 scripts/params.default.json
 ```
 
-Mainiet:
-1. Kopējiet → `params.json`  
-2. Rediģējiet
+Mainīšanai:
+1. Nokopējiet uz `params.json`
+2. Rediģējiet vērtības
 
 ---
-
 # 🟦 7. Kur mācīties Blender
 
 🎥 **Video: Blender pamati**  
 https://img.youtube.com/vi/YOUTUBE_ID_07/hqdefault.jpg](https://www.youtube.com/watch?v=YOUTUBE_ID_07)
 
-Dokumentācija:  
 https://docs.blender.org/manual/en/latest/
 
 ---
-
-# 🟩 8. Ko Jums jāiesniedz skolotājam
-
-🎥 **Video: Kā sagatavot iesniegumu**  
-https://img.youtube.com/vi/YOUTUBE_ID_08/hqdefault.jpg](https://www.youtube.com/watch?v=YOUTUBE_ID_08)
-
-Jāiesniedz:
-- parametru apraksts  
-- simulācijas attēli  
-- īss video  
-- rezultātu salīdzinājums  
-
----
-
-# 🟪 9. Biežākās problēmas
+# 8. Biežākās problēmas
 
 🎥 **Video: Problēmu risināšana**  
 https://img.youtube.com/vi/YOUTUBE_ID_09/hqdefault.jpg](https://www.youtube.com/watch?v=YOUTUBE_ID_09)
 
 ---
 
-# 🎉 Veiksmi darbā un eksperimentēšanā ar Blender!
